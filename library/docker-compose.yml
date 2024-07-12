@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'library-app:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root1234
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres?currentSchema=library
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - DB_SCHEMA=postgres
+    volumes:
+      - db-data:/var/lib/postgres
+      - ./DB_script.sql:/docker-entrypoint-initdb.d/0_init.sql
+
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - ~/Documents/postgres-data/:/var/lib/postgresql/data
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root1234
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+volumes:
+  db-data:
