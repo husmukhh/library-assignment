@@ -47,8 +47,11 @@ public class BookBorrowerService {
         logger.info("Entered in BookBorrowerService.returnBook()");
         BookBorrower bookBorrower = bookBorrowerRepository.findFirstByBookIdAndBorrowerIdOrderByIdDesc(bookBorrowReturnRequest.getBookId(),
                 bookBorrowReturnRequest.getBorrowerId());
-        if((bookBorrower == null || bookBorrower.getBorrowerId() == null)  || bookBorrower.getReturnDate() != null){
-            logger.info("BookBorrowerService.returnBook() -- invalid request returned date{}", bookBorrower.getReturnDate());
+        if((bookBorrower == null || bookBorrower.getBorrowerId() == null)  || ( bookBorrower != null && bookBorrower.getReturnDate() != null)){
+            logger.info("BookBorrowerService.returnBook() -- invalid request record not exist");
+            if(bookBorrower != null){
+                logger.info("Book is already returned by borrower on  {}", bookBorrower.getReturnDate());
+            }
             throw new RecordNotFoundException("Given record does not exists.");
         }else{
             bookBorrower.setReturnDate(new Date(System.currentTimeMillis()));
