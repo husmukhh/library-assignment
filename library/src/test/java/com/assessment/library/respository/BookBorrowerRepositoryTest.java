@@ -1,4 +1,4 @@
-package com.assessment.library;
+package com.assessment.library.respository;
 
 import com.assessment.library.entity.BookBorrower;
 import com.assessment.library.repository.BookBorrowerRepository;
